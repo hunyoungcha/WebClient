@@ -22,6 +22,8 @@ public:
     // QTcpSocket socket_;
     QSslSocket socket_;
     int isHTTPS = 0;
+    int isConnected = 0;
+    void SetButton();
 
 public slots:
     void doConnected();

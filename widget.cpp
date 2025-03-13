@@ -11,6 +11,10 @@ Widget::Widget(QWidget *parent)
     QObject::connect(&socket_, &QAbstractSocket::connected, this, &Widget::doConnected);
     QObject::connect(&socket_, &QAbstractSocket::disconnected, this, &Widget::doDisConnected);
     QObject::connect(&socket_, &QIODevice::readyRead, this, &Widget::doReadyRead);
+
+    ui->pbDisConnect->setEnabled(isConnected);
+    ui->pbSend->setEnabled(isConnected);
+
 }
 
 Widget::~Widget()
@@ -30,6 +34,17 @@ void Widget::doReadyRead(){
     ui->pteMessage->insertPlainText(socket_.readAll());
 }
 
+void Widget::SetButton(){
+    //switch pbConnect and discon
+
+    ui->pbConnect->setEnabled(isConnected);
+
+    isConnected = (isConnected  + 1) % 2;
+    ui->pbDisConnect->setEnabled(isConnected);
+    ui->pbSend->setEnabled(isConnected);
+
+}
+
 void Widget::on_pbConnect_clicked()
 {
     if (isHTTPS){
@@ -39,13 +54,16 @@ void Widget::on_pbConnect_clicked()
         socket_.connectToHost(ui->lePost->text(), ui->lePort->text().toUShort());
     }
 
+    SetButton();
 
 }
+
 
 
 void Widget::on_pbDisConnect_clicked()
 {
     socket_.disconnectFromHost();
+    SetButton();
 }
 
 
